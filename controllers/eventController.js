@@ -13,36 +13,31 @@ const getUserFromToken = (req) => {
   }
 };
 
+// Create a new event (authenticated users only)
 export const createEvent = async (req, res) => {
-  const user = getUserFromToken(req);
-  if (!user) {
-    return res.status(401).json({ message: 'Unauthorized: Login required' });
-  }
-
-  const { title, description, date } = req.body;
-
   try {
-    const newEvent = new Event({
+    const { title, description, date, createdBy, createdByName, createdByEmail } = req.body;
+    const event = new Events({
       title,
       description,
       date,
-      createdBy: user.id, // still storing the creator
+      createdBy,
+      createdByName,
+      createdByEmail
     });
-
-    await newEvent.save();
-    res.status(201).json({ message: 'Event created successfully' });
+    await event.save();
+    res.status(201).json(event);
   } catch (err) {
-    res.status(500).json({ message: 'Failed to create event' });
+    res.status(500).json({ message: err.message });
   }
 };
 
-
-// Get all events
+// Public - Get all events
 export const getAllEvents = async (req, res) => {
   try {
     const events = await Event.find().sort({ date: 1 });
-    res.json(events);
+    res.status(200).json(events);
   } catch (err) {
-    res.status(500).json({ message: 'Failed to fetch events' });
+    res.status(500).json({ message: 'Failed to fetch events', error: err.message });
   }
 };

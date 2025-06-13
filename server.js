@@ -20,7 +20,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/auth', authRoutes);
 
-app.use('./api/event',eventRoutes);
+app.use('/api/events',eventRoutes);
 
 const PORT = process.env.PORT || 5000;
 

@@ -3,7 +3,9 @@ import { createEvent, getAllEvents } from '../controllers/eventController.js';
 
 const router = express.Router();
 
-router.get('/', getAllEvents);          // Public route
-router.post('/', createEvent);          // Protected (admin only)
+// Public route - anyone can see events
+router.post('/getevent', getAllEvents);
+
+router.post('/create', createEvent);
 
 export default router;
