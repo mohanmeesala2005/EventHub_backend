@@ -3,14 +3,17 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
 export const registerUser = async (req, res) => {
-  const { name, email, password } = req.body;
+  const {username, name, email, password } = req.body;
   try {
     const existingUser = await User.findOne({ email });
+    const existingUsername = await User.findOne({username});
     if (existingUser) return res.status(400).json({ message: 'User already exists' });
+
+    if(existingUsername) return res.status(400).json({message:"Username already exists"})
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const user = new User({ name, email, password: hashedPassword });
+    const user = new User({username, name, email, password: hashedPassword });
     await user.save();
 
     // Generate token for the new user (same as login)
@@ -23,6 +26,7 @@ export const registerUser = async (req, res) => {
       token, 
       user: { 
         id: user._id, 
+        username:user.username,
         name: user.name, 
         email: user.email, 
         role: user.role 
@@ -47,7 +51,7 @@ export const loginUser = async (req, res) => {
       expiresIn: '1d',
     });
 
-    res.json({ token, user: { id: user._id, name: user.name, email: user.email, role: user.role } });
+    res.json({ token, user: { id: user._id,username:user.username, name: user.name, email: user.email, role: user.role } });
   } catch (err) {
     res.status(500).json({ message: 'Login failed' });
   }

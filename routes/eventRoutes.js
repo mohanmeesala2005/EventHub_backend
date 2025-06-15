@@ -1,11 +1,12 @@
 import express from 'express';
-import { createEvent, getAllEvents } from '../controllers/eventController.js';
+import uploads from '../middlewares/uploads.js';
+import authMiddleware from '../middlewares/auth.js';
+import { createEvent, getAllEvents, deleteEvent } from '../controllers/eventController.js';
 
 const router = express.Router();
 
-// Public route - anyone can see events
+router.post('/create', authMiddleware, uploads.single('image'), createEvent);
 router.post('/getevent', getAllEvents);
-
-router.post('/create', createEvent);
+router.delete('/:id', authMiddleware, deleteEvent);
 
 export default router;

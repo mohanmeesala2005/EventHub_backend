@@ -4,12 +4,14 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import authRoutes from './routes/authroutes.js';
 import eventRoutes from './routes/eventRoutes.js';
+import path from 'path';
 
 dotenv.config();
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
   res.json({
@@ -21,6 +23,8 @@ app.get('/', (req, res) => {
 app.use('/api/auth', authRoutes);
 
 app.use('/api/events',eventRoutes);
+
+app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
 const PORT = process.env.PORT || 5000;
 
