@@ -4,6 +4,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import authRoutes from './routes/authroutes.js';
 import eventRoutes from './routes/eventRoutes.js';
+import chatbotRoutes from './routes/chatbot.js'
 import path from 'path';
 
 dotenv.config();
@@ -24,14 +25,14 @@ app.use('/api/auth', authRoutes);
 
 app.use('/api/events',eventRoutes);
 
+app.use('/api/chatbot',chatbotRoutes);
+
 app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
 const PORT = process.env.PORT || 5000;
 
 mongoose
   .connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
   })
   .then(() => {
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
