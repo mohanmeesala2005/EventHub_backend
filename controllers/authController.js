@@ -39,10 +39,16 @@ export const registerUser = async (req, res) => {
 };
 
 export const loginUser = async (req, res) => {
-  const { email, password } = req.body;
+  const { username, email, password } = req.body;
+
   try {
     const user = await User.findOne({ email });
     if (!user) return res.status(404).json({ message: 'User not found' });
+
+    // Check if the username matches the user's username
+    if (username && user.username !== username) {
+      return res.status(400).json({ message: 'Username does not match the email' });
+    }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(401).json({ message: 'Invalid credentials' });
@@ -54,5 +60,22 @@ export const loginUser = async (req, res) => {
     res.json({ token, user: { id: user._id,username:user.username, name: user.name, email: user.email, role: user.role } });
   } catch (err) {
     res.status(500).json({ message: 'Login failed' });
+  }
+};
+
+export const updateProfile = async(req,res) => {
+  try{
+    const {userName,name,password} = req.body;
+  const user = await User.findById(req.params.id);
+  if(!user){
+    return res.status(404).json({message  :"User Not Found"});
+  }
+  user.name= name;
+  user.userName = userName;
+  user.password = password;
+  await user.save();
+  res.status(200).json({message:"Profile Updated!",user});
+  }catch(err){
+    res.status(500).json({message:"Something went wrong "});
   }
 };
