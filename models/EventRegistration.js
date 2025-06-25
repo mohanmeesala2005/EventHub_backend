@@ -5,6 +5,7 @@ const eventRegistrationSchema = new mongoose.Schema({
   name: String,
   email: String,
   phone: String,
+  cost:Number,
   // add more fields as needed
 });
 

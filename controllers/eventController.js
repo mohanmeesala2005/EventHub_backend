@@ -6,7 +6,7 @@ import path from 'path';
 // Create Event
 export const createEvent = async (req, res) => {
   try {
-    const { title, description, date, createdBy, createdByName, createdByEmail } = req.body;
+    const { title, description, date,cost, createdBy, createdByName, createdByEmail } = req.body;
     let imagePath = '';
     if (req.file) {
       imagePath = req.file.path.replace(/\\/g, '/');
@@ -15,6 +15,7 @@ export const createEvent = async (req, res) => {
       title,
       description,
       date,
+      cost,
       createdBy,
       createdByName,
       createdByEmail,
@@ -61,7 +62,7 @@ export const deleteEvent = async (req, res) => {
 
 export const updateEvent = async(req,res) => {
   try{
-   const { title, description, date } = req.body;
+   const { title, description, date,cost } = req.body;
     const event = await Event.findById(req.params.id);
     if (!event) {
       return res.status(404).json({ message: "Event not found" });
@@ -81,6 +82,7 @@ export const updateEvent = async(req,res) => {
     event.title = title;
     event.description = description;
     event.date = date;
+    event.cost = cost;
 
     await event.save();
     res.status(200).json({ message: "Event updated successfully", event });
